@@ -71,13 +71,13 @@
 ## 6. 하드웨어 구조 및 회로 연결
 
 ### 6.1 터치센서
-![alt text](image/image.png)
+<img src="image/image.png" width="320">
 
 ### 6.2 포토 인터럽터
-![alt text](image/image-2.png)
+<img src="image/image-2.png" width="320">
 
 ### 6.3 부저 모듈
-![alt text](image/image-3.png)
+<img src="image/image-3.png" width="320">
 
 ## 7. 배선 연결표
 
