@@ -18,19 +18,33 @@
 
 | 번호 | 모듈 이름 | 구분 | 용도 |
 |---:|---|---|---|
-| 1 | 포토 인터럽터 | 입력 센서 |  |
-| 2 | 터치 센서 모듈 | 입력 센서 |  |
-| 3 | 부저 모듈 | 출력 모듈 |  |
+| 1 | 포토 인터럽터 | 입력 센서 | 센서사이의 차단을 감지함 |
+| 2 | 터치 센서 모듈 | 입력 센서 | 터치를 감지함 |
+| 3 | 수동 부저 모듈 | 출력 모듈 | 부저음 출력 |
 
 ## 4. 전체 시스템 구조
 
-### 추후 작성
+```bash
+hope@hope:~/turtlebot3_ws/src/tb3_arduino_sensor_bridge$ tree
+.
+├── package.xml
+├── resource
+│   └── tb3_arduino_sensor_bridge
+├── setup.cfg
+├── setup.py
+├── tb3_arduino_sensor_bridge
+│   ├── arduino_sensor_bridge_project.py
+│   ├── __init__.py
+│   ├── __pycache__
+
+```
 
 ## 5. 센서 모듈 조사 내용
 
 ### 5.1 터치 센서 모듈
 
-[터치 센서 모듈 image]()
+<img src="hardware/module_photo/IMG_6915.JPG" width="320">
+
 
 | 항목 | 내용 |
 |---|---|
@@ -44,7 +58,7 @@
 
 ### 5.2 포토 인터럽터
 
-[포토 인터럽터 image]()
+<img src="hardware/module_photo/IMG_6916.JPG" width="320">
 
 | 항목 | 내용 |
 |---|---|
@@ -57,7 +71,7 @@
 
 ### 5.3 부저 모듈
 
-[부저 모듈 image]()
+<img src="hardware/module_photo/IMG_6918.JPG" width="320">
 
 | 항목 | 내용 |
 |---|---|
@@ -71,13 +85,13 @@
 ## 6. 하드웨어 구조 및 회로 연결
 
 ### 6.1 터치센서
-<img src="image/image.png" width="320">
+<img src="hardware/wiring_diagram/image.png" width="320">
 
 ### 6.2 포토 인터럽터
-<img src="image/image-2.png" width="320">
+<img src="hardware/wiring_diagram/image-2.png" width="320">
 
 ### 6.3 부저 모듈
-<img src="image/image-3.png" width="320">
+<img src="hardware/wiring_diagram/image-3.png" width="320">
 
 ## 7. 배선 연결표
 
@@ -148,9 +162,9 @@ Payload: buzzer_state
 |Packet ID|방향|설명|
 |---:|---|---|
 |0x31|Arduino → ROS2|터치센서모듈 상태, 포토인터럽터 상태, 부저모듈 상태 보고|
-|0x41|ROS2 → Arduino| 터치센서모듈 -> 경유점주행 시작 |
-|0x42|ROS2 → Arduino| 포토인터럽터 -> 부저소리 |
-|0x43|ROS2 → Arduino| bringup -> 부저멜로디 출력 |
+|0x41|ROS2 → Arduino| 터치센서모듈 |
+|0x42|ROS2 → Arduino| 포토인터럽터 |
+|0x43|ROS2 → Arduino| 부저멜로디 |
 |0x44|ROS2 → Arduino| 부저음 출력 |
 |0x7F|양방향|통신 확인용 Ping|
 
@@ -183,6 +197,25 @@ Arduino firmware는 다음 기능을 수행합니다.
 8. 출력 모듈 제어 `applyMelody(), applyBuzzer()`
 
 ## 12. ROS 2 Sensor Bridge Node 구조
+
+노드 생성: ROS 2 노드를 만들고 포트 및 통신 속도 파라미터를 가져옵니다.
+
+통신 준비: 시리얼 객체, 스레드 락, 송수신 시퀀스 번호 및 파서를 초기화합니다.
+
+인터페이스 구축: 센서 상태를 보낼 발행자와 명령을 받을 구독자를 생성합니다.
+
+포트 및 타이머 가동: 시리얼 포트를 열고 수신 및 핑 타이머를 구동합니다.
+
+데이터 수신 및 분해: 5ms마다 스레드 락을 걸어 데이터를 읽고 1바이트씩 분해합니다.
+
+헤더 및 메타 추출: 시작 바이트(0xAA)를 포착하고 패킷 ID, 길이, 시퀀스를 저장합니다.
+
+무결성 검증: 페이로드를 채운 후 끝 바이트와 체크섬을 검사하여 틀리면 파서를 리셋합니다.
+
+데이터 파싱: 검증된 패킷 ID를 분류하여 터치, 포토 인터럽터, 부저 상태 값을 분리합니다.
+
+토픽 발행 및 종료: 추출한 데이터를 ROS 2 토픽으로 발행하며, 종료 시 포트를 닫고 자원을 해제 합니다.
+
 
 ## 13. 빌드 방법
 
