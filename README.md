@@ -76,10 +76,7 @@
 ### 6.2 포토 인터럽터
 ![alt text](image/image-2.png)
 
-### 6.3 IR 적외선 모듈
-![alt text](image/image-1.png)
-
-### 6.4 부저 모듈
+### 6.3 부저 모듈
 ![alt text](image/image-3.png)
 
 ## 7. 배선 연결표
@@ -176,7 +173,32 @@ Payload: buzzer_state
 
 ## 11. Arduino Firmware 구조
 ## 12. ROS 2 Sensor Bridge Node 구조
+
 ## 13. 빌드 방법
+
+### 13.1 워크스페이스 이동
+
+```bash
+cd ~/turtlebot3_ws
+```
+8.2 패키지 빌드
+
+```bash
+colcon build --packages-select tb3_arduino_sensor_bridge
+```
+8.3 환경 설정
+```bash
+source install/setup.bash
+```
+
+`package.xml`에는 아래 항목이 반드시 있어야 합니다.
+
+```xml
+<export>
+  <build_type>ament_cmake</build_type>
+</export>
+```
+
 ## 14. 실행 방법
 
 ### 14.1 Arduino 연결 확인
@@ -195,7 +217,7 @@ sudo usermod -aG dialout $USER
 ### 14.3 ros2 node 실행
 
 ```bash
-ros2 launch hope_sensor_bridge sensor_bridge.launch.py
+ros2 run tb3_arduino_sensor_bridge arduino_sensor_bridge_project
 ```
 
 
@@ -215,7 +237,7 @@ ros2 launch hope_sensor_bridge sensor_bridge.launch.py
 
 | 문제 | 원인 | 해결 방법 |
 |---|---|---|
-| `/dev/ttyACM0`가 보이지 않음 | Arduino 연결 불량 또는 케이블 문제 | USB 케이블 교체, 포트 재확인 |
+| `/dev/tb3_sensor`가 보이지 않음 | Arduino 연결 불량 또는 케이블 문제 | USB 케이블 교체, 포트 재확인 |
 | Permission denied 발생 | dialout 권한 없음 | `sudo usermod -aG dialout $USER` 실행 후 재부팅 |
 | 센서값이 변하지 않음 | 배선 오류 또는 핀 번호 오류 | VCC/GND/Signal 연결 재확인 |
 | 패킷 파싱 실패 | Start/End byte 불일치 | Arduino와 ROS 2의 패킷 구조 비교 |
@@ -224,3 +246,81 @@ ros2 launch hope_sensor_bridge sensor_bridge.launch.py
 | 출력 모듈이 동작하지 않음 | Packet ID 또는 Payload 오류 | `/cmd/...` 토픽과 Arduino 명령 파싱 확인 |
 
 ## 17. 실행 결과
+
+### 17.1 ros2 topic list 결과
+
+```bash
+/touch_sensor/state
+/touch_sensor/cmd
+/photo_interrupter_sensor/state
+/photo_interrupter_sensor/cmd
+/buzzer/melody/state
+/buzzer/melody/cmd
+/buzzer/state
+/buzzer/cmd
+```
+### 17.2.1 터치 센서 입력
+```bash
+/touch_sensor/cmd true 
+/touch_sensor/cmd off
+```
+### 17.2.2 터치 센서 출력
+```bash
+/touch_sensor/state
+
+data: true
+---
+data: true
+---
+data: false
+```
+### 17.3.1 포토 인터럽터 입력
+```bash
+/photo_interrupter_sensor/cmd true 
+/photo_interrupter_sensor/cmd off
+```
+
+### 17.3.2 포토 인터럽터 출력
+```bash
+/buzzer/melody/state
+
+data: true
+---
+data: true
+---
+data: false
+```
+
+### 17.4.1 부저 멜로디 입력
+```bash
+/buzzer/melody/cmd true 
+/buzzer/melody/cmd off
+```
+
+### 17.4.2 부저 멜로디 출력
+```bash
+/photo_interrupter_sensor/state
+
+data: true
+---
+data: true
+---
+data: false
+```
+
+### 17.5.1 부저 멜로디 입력
+```bash
+/buzzer/cmd true 
+/buzzer/cmd off
+```
+
+### 17.5.2 부저 멜로디 출력
+```bash
+/buzzer/state
+
+data: true
+---
+data: true
+---
+data: false
+```
