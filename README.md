@@ -175,6 +175,16 @@ Payload: buzzer_state
 
 
 ## 11. Arduino Firmware 구조
+Arduino firmware는 다음 기능을 수행합니다.
+1. 센서 핀 초기화 `setup()`
+2. 센서값 읽기 `readSerial(), readTouch(), readPhoto()`
+3. Payload 생성 `senSensorState(), sendPacket()`
+4. Checksum 계산 `calcChecksum()`
+5. Serial.write() 기반 바이너리 패킷 송신
+6. ROS 2 명령 패킷 수신
+7. 명령 패킷 파싱 
+8. 출력 모듈 제어 `applyMelody(), applyBuzzer()`
+
 ## 12. ROS 2 Sensor Bridge Node 구조
 ## 13. 빌드 방법
 ## 14. 실행 방법
