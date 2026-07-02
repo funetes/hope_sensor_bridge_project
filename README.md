@@ -34,6 +34,7 @@ hope@hope:~/turtlebot3_ws/src/tb3_arduino_sensor_bridge$ tree
 ├── setup.py
 ├── tb3_arduino_sensor_bridge
 │   ├── arduino_sensor_bridge_project.py
+│   ├── touch_sensor_node.py
 │   ├── __init__.py
 │   ├── __pycache__
 
@@ -117,8 +118,6 @@ Payload: touch_state
 0x00 = touch OFF
 0x01 = touch ON
 
-touch On: AA AA AA 41 01 01 01 ~ AA EE
-touch Off: AA AA AA 41 01 01 00 ~ AA EE
 ```
 ---
 
@@ -261,6 +260,7 @@ sudo usermod -aG dialout $USER
 
 ```bash
 ros2 run tb3_arduino_sensor_bridge arduino_sensor_bridge_project
+ros2 run tb3_arduino_sensor_bridge touch_sensor_node # 아두이노에서 받은 데이터를 다시 아두이노에게 전달
 ```
 
 
@@ -325,7 +325,7 @@ data: false
 
 ### 17.3.2 포토 인터럽터 출력
 ```bash
-/buzzer/melody/state
+/photo_interrupter_sensor/state
 
 data: true
 ---
@@ -342,7 +342,7 @@ data: false
 
 ### 17.4.2 부저 멜로디 출력
 ```bash
-/photo_interrupter_sensor/state
+/buzzer/melody/state
 
 data: true
 ---
@@ -351,13 +351,13 @@ data: true
 data: false
 ```
 
-### 17.5.1 부저 멜로디 입력
+### 17.5.1 부저 입력
 ```bash
 /buzzer/cmd true 
 /buzzer/cmd off
 ```
 
-### 17.5.2 부저 멜로디 출력
+### 17.5.2 부저 출력
 ```bash
 /buzzer/state
 
